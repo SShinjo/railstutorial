@@ -23,7 +23,13 @@
       </div>
     </header>
     <div class="container">
+        <% flash.each do |message_type, message| %>
+         <%= content_tag(:div, message, class: "alert alert-#{message_type}") %>
+        <% end %>
     <%= yield %>
+
+    <!-- デバッグ情報の追加（開発環境でのみ表示） -->
+    <%= debug(params) if Rails.env.development? %>
   </div>
   </body>
 </html>

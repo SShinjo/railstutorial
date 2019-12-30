@@ -1,0 +1,15 @@
+<!-- 複数のビューで使われるパーシャルは専用のディレクトリ「shared」に置かれることが多い -->
+
+<% if @user.errors.any? %>
+	<div id="error_explanation">
+	<!-- エラーメッセージにスタイルを与えるためのCSS：id="error_explanation" -->
+		<div class="alert alert-danger">
+			The form contains <%= pluralize(@user.errors.count, "error") %>
+		</div>
+		<ul>
+			<% @user.errors.full_messages.each do |msg| %>
+			 <li><%= msg %></li>
+			<% end %>
+		</ul>
+	</div>
+<% end %>
