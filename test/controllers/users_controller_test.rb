@@ -42,7 +42,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_difference('User.count', -1) do
       delete user_url(@user)
     end
-
+　
     assert_redirected_to users_url
   end
 end

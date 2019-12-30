@@ -72,3 +72,6 @@ end
 
 
 gem 'bootstrap-sass'
+
+# ハッシュ関数用のgem
+gem 'bcrypt'
