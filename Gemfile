@@ -78,3 +78,9 @@ gem 'jquery-rails'
 # ハッシュ関数用のgem
 gem 'bcrypt'
 
+# フェイクのユーザーデータを作る
+gem 'faker'
+
+# ペジネーション用
+gem 'will_paginate'
+gem 'bootstrap-will_paginate'
