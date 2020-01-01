@@ -74,7 +74,8 @@ class UsersController < ApplicationController
       @user = User.find(params[:id])
     end
 
-    def logged_in?
+    # ログイン済みユーザーかどうか確認
+    def logged_in_user
       unless logged_in?
         flash[:danger] = "Please log in."
         redirect_to login_url
@@ -83,7 +84,7 @@ class UsersController < ApplicationController
 
     def correct_user
       @user = User.find(params[:id])
-      redirect_to(root_path) unless @user == current_user
+      redirect_to(root_path) unless current_user?(@user)
     end
 
     def admin_user

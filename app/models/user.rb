@@ -5,20 +5,19 @@ class User < ApplicationRecord
 
 # 仮想のremeber_token属性を作成する
 # passwordの時は、データベース上のセキュアなpassword_digest属性と、password属性の二つが使えた（has_secure_passwordによる）
-attr_accessor :remember_token
+attr_accessor :remember_token, :activation_token
 
-
-before_save {self.email = email.downcase}
+before_save :downcase_email
+# before_save {self.email = email.downcase}
 # before_save {email.downcase!} でもOK
 
 # データベースに保存される前に、全ての文字列（アドレス）を小文字化する
 # コールバックメソッドの１つ：before_saveを使う
 # email.downcase = self.email.downcase
 # １）バリデーションの記述、２）アドレスにインデックスを与え、一意性を与える、３）保存する前に小文字化、で２重サブミット問題は解消される（らしい）
-
+before_create :create_activation_digest
 
 has_many :microposts
-
 validates :name, presence: true, length: {maximum: 50}
 
 VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -44,20 +43,20 @@ has_secure_password
 validates :password, presence: true, length: { minimum: 6 }
 
 # クラスメソッド作成
-class << self
+# class << self
 # 渡された文字列のハッシュ値を返すs
-def digest(string)
+def User.digest(string)
 	cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
                                                   BCrypt::Engine.cost
 	BCrypt::Password.create(string, cost: cost)
 end
 
 # ランダムなトークンを返す
-def new_token
+def User.new_token
 	SecureRandom.urlsafe_base64
 end
 
-end
+# end
 
 # 永続セッションのためにユーザーをデータベースに記憶する
 def remember
@@ -66,14 +65,30 @@ def remember
 end
 
 # 渡されたトークンがダイジェストと一致したらtrueを返す
-def authenticated?(remember_token)
-	return false if remember_digest.nil?
-	BCrypt::Password.new(remember_digest).is_password?(remember_token)
+def authenticated?(attribute, token)
+	digest = self.send("#{attribute}_digest")
+	return false if digest.nil?
+	BCrypt::Password.new(digest).is_password?(token)
 end
 
 # ユーザーのログイン情報を破棄する
 def forget
 	update_attribute(:remember_digest, nil)
 end
+
+
+private
+
+# メールアドレスを全て小文字にする
+def downcase_email
+	self.email = email.downcase
+end
+
+# 有効化トークンとダイジェストを作成及び代入する
+def create_activation_digest
+	self.activation_token = User.new_token
+	self.activation_digest = User.digest(activation_token)
+end
+
 
 end
