@@ -12,6 +12,7 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+    @microposts = @user.microposts.paginate(page: params[:page])
   end
 
   # GET /users/new
@@ -75,12 +76,12 @@ class UsersController < ApplicationController
     end
 
     # ログイン済みユーザーかどうか確認
-    def logged_in_user
-      unless logged_in?
-        flash[:danger] = "Please log in."
-        redirect_to login_url
-      end
-    end
+    # def logged_in_user
+    #   unless logged_in?
+    #     flash[:danger] = "Please log in."
+    #     redirect_to login_url
+    #   end
+    # end
 
     def correct_user
       @user = User.find(params[:id])

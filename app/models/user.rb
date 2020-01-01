@@ -17,7 +17,7 @@ before_save :downcase_email
 # １）バリデーションの記述、２）アドレスにインデックスを与え、一意性を与える、３）保存する前に小文字化、で２重サブミット問題は解消される（らしい）
 before_create :create_activation_digest
 
-has_many :microposts
+has_many :microposts, dependent: :destroy
 validates :name, presence: true, length: {maximum: 50}
 
 VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
@@ -102,6 +102,11 @@ end
 def password_reset_expired?
 	# パスワード再設定メールの送信時刻が、現在時刻より２時間以上前の場合
 	reset_sent_at < 2.hours.ago
+end
+
+# 疑問符をつけることで、SQLクエリに代入する前にidがエスケープされる
+def feed
+	Micropost.where("user_id = ?", id)
 end
 
 private
