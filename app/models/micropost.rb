@@ -8,7 +8,7 @@ default_scope -> { order(created_at: :desc) }
 mount_uploader :picture, PictureUploader
 validates :user_id, presence: true
 validates :content, length: { maximum: 140}, presence: true
-validates :picture_size
+# validates :picture_size
 
 private
 	# アップデートされた画像のサイズをバリデーションする
