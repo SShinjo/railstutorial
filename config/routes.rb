@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   get '/help', to: 'static_pages#help', as:'helf'
   get 'static_pages/about'
   get 'static_pages/contact'
+
+  get '/login', to: "sessions#new"
+  post '/login', to: "sessions#create"
+  delete '/logout', to: "sessions#destroy"
   resources :microposts
 
   get '/signup', to:'users#new'

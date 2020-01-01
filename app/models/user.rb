@@ -37,4 +37,11 @@ has_secure_password
 	# （引数の文字列がパスワードと一致するとUserオブジェクトを、間違っているとfalseを返すメソッド）
 
 validates :password, presence: true, length: { minimum: 6 }
+
+# テスト用ユーザーのパスワード生成用
+def User.digest(string)
+	cost = ActiveModel::SecurePassword.min_cost? BCrypt::Engine::MIN_COST:BCrypt::Engine.cost
+	BCrypt::Password.create(string, cost: cost)
+end
+
 end
